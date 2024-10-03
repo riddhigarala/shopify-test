@@ -9,6 +9,20 @@
             	</select>
             
             	{% endfor %}
+
+             /************/
+             {% if product.options.size > 1 %}
+  {% assign second_option_name = product.options[1] %}
+  <h4>{{ second_option_name }}</h4>
+  <ul>
+    {% for variant in product.variants %}
+      {% if variant.option2 %}
+        <li>{{ variant.option2 }}</li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endif %}
+
 <section
   id="MainProduct-{{ section.id }}"
   class="page-width section-{{ section.id }}-padding"
