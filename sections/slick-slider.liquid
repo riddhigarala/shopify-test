@@ -1,6 +1,30 @@
+
 {% schema %}
   {
-    "name": "Section name",
-    "settings": []
+    "name": "Slick Slider",
+    "settings": [],
+    "blocks": [
+      {
+        "type": "image",
+        "name":"Image",
+        "settings": [
+          {
+            "type": "image_picker",
+            "id": "image",
+            "label": "Image"
+          },
+          {
+            "type": "url",
+            "id": "url",
+            "label": "Url"
+          }
+        ]
+      }
+    ],
+    "presets": [
+      {
+        "name": "Slick Slider"
+      }
+    ]
   }
 {% endschema %}
