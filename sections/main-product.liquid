@@ -5,6 +5,8 @@
     {% for variant in product.variants %}
       {% if variant.option2 %}
         <li>{{ variant.option2 }}</li>
+        {% else %}
+        {% break %}
       {% endif %}
     {% endfor %}
   </ul>
