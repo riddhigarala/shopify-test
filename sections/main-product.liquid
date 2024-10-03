@@ -1,7 +1,5 @@
-{% for product_option in product.options_with_values %}
-    {%- for value in product_option.values -%}
-        <{{ product_option.name }}>{{value}}</{{ product_option.name }}>
-    {%- endfor -%}
+ {% for option in product.options %}
+   {{ option.name }}
 {% endfor %}
 <section
   id="MainProduct-{{ section.id }}"
