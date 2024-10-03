@@ -2,15 +2,16 @@
   {% assign second_option_name = product.options[1] %}
   <h4>{{ second_option_name }}</h4>
   <ul>
+    {% assign unique_options = "" %}
     {% for variant in product.variants %}
-      {% if variant.option2 %}
+      {% unless unique_options contains variant.option2 %}
         <li>{{ variant.option2 }}</li>
-        {% else %}
-        {% break %}
-      {% endif %}
+        {% assign unique_options = unique_options | append: variant.option2 | append: "," %}
+      {% endunless %}
     {% endfor %}
   </ul>
 {% endif %}
+
 
 <section
   id="MainProduct-{{ section.id }}"
