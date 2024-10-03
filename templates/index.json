@@ -9,6 +9,47 @@
 */
 {
   "sections": {
+    "slick_slider_EtY4g8": {
+      "type": "slick-slider",
+      "blocks": {
+        "image_3WeMTC": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/self-serve-coffee-shop.jpg",
+            "url": "shopify://collections"
+          }
+        },
+        "image_836KTc": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/rack-of-womens-clothing.jpg",
+            "url": "shopify://blogs/news"
+          }
+        },
+        "image_4ye736": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/iphone-detects-qr-code.jpg",
+            "url": "shopify://pages/privacy-policy"
+          }
+        },
+        "image_aDezzY": {
+          "type": "image",
+          "settings": {
+            "image": "shopify://shop_images/small-business-interior.jpg",
+            "url": "shopify://pages/contact"
+          }
+        }
+      },
+      "block_order": [
+        "image_3WeMTC",
+        "image_836KTc",
+        "image_4ye736",
+        "image_aDezzY"
+      ],
+      "settings": {
+      }
+    },
     "image_banner": {
       "type": "image-banner",
       "blocks": {
@@ -149,6 +190,7 @@
     }
   },
   "order": [
+    "slick_slider_EtY4g8",
     "image_banner",
     "featured_collection",
     "slideshow_eyFjLM"
