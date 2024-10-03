@@ -1,3 +1,25 @@
+<!-- Add the slick-theme.css if you want default styling -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css"/>
+<!-- Add the slick-theme.css if you want default styling -->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css"/>
+
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script>
+  $(".full-image-slider").slick({  
+  infinite: false,
+  slidesToShow: 1,
+  autoplay:true
+});
+</script>
+<div class="full-image-slider">
+{% for block in section.blocks %}
+<div>
+  <a href="{{ block.settings.url }}">
+    <img src="{{ block.settings.image | img_url:'master' }}"/>
+  </a>
+</div>
+{% endfor %}
+</div>
 
 {% schema %}
   {
