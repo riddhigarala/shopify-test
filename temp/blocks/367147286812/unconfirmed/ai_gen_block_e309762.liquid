@@ -1,6 +1,537 @@
+{% doc %}
+  @prompt
+    Create a responsive "Science-Backed Ingredients" section with a centered title, subtitle text, and a grid of 4 ingredient cards (Passionfruit, Wild Jujube GABA, Tart Cherry, Phytomelatonin). Each card should have an ingredient image, name, and expandable plus icon. Include a "See Full Ingredients List" link at the bottom. The section should be fully responsive with proper mobile layout, clean typography, and hover effects on the cards and plus icons.
+
+{% enddoc %}
+{% assign ai_gen_id = block.id | replace: '_', '' | downcase %}
+
+{% style %}
+  .ai-ingredients-section-{{ ai_gen_id }} {
+    padding: 60px 20px;
+    background-color: {{ block.settings.background_color }};
+    text-align: center;
+  }
+
+  .ai-ingredients-container-{{ ai_gen_id }} {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .ai-ingredients-header-{{ ai_gen_id }} {
+    margin-bottom: 50px;
+  }
+
+  .ai-ingredients-title-{{ ai_gen_id }} {
+    font-size: {{ block.settings.title_size }}px;
+    color: {{ block.settings.title_color }};
+    margin: 0 0 16px;
+    font-weight: 600;
+  }
+
+  .ai-ingredients-subtitle-{{ ai_gen_id }} {
+    font-size: {{ block.settings.subtitle_size }}px;
+    color: {{ block.settings.subtitle_color }};
+    margin: 0;
+    max-width: 600px;
+    margin: 0 auto;
+    line-height: 1.5;
+  }
+
+  .ai-ingredients-grid-{{ ai_gen_id }} {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 30px;
+    margin-bottom: 40px;
+  }
+
+  .ai-ingredient-card-{{ ai_gen_id }} {
+    background-color: {{ block.settings.card_background }};
+    border-radius: {{ block.settings.card_radius }}px;
+    padding: 30px 20px;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid {{ block.settings.card_border_color }};
+  }
+
+  .ai-ingredient-card-{{ ai_gen_id }}:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  }
+
+  .ai-ingredient-image-wrapper-{{ ai_gen_id }} {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 20px;
+    border-radius: 50%;
+    overflow: hidden;
+    background-color: #f8f8f8;
+  }
+
+  .ai-ingredient-image-wrapper-{{ ai_gen_id }} img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ai-ingredient-image-wrapper-{{ ai_gen_id }} svg {
+    width: 100%;
+    height: 100%;
+    background-color: #f8f8f8;
+  }
+
+  .ai-ingredient-name-{{ ai_gen_id }} {
+    font-size: 18px;
+    font-weight: 600;
+    color: {{ block.settings.card_text_color }};
+    margin: 0 0 15px;
+  }
+
+  .ai-ingredient-expand-{{ ai_gen_id }} {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    border: none;
+    background-color: {{ block.settings.plus_background }};
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    color: {{ block.settings.plus_color }};
+  }
+
+  .ai-ingredient-expand-{{ ai_gen_id }}:hover {
+    background-color: {{ block.settings.plus_hover_background }};
+    transform: scale(1.1);
+  }
+
+  .ai-ingredient-expand-{{ ai_gen_id }} svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+  }
+
+  .ai-ingredient-expand-{{ ai_gen_id }}.active svg {
+    transform: rotate(45deg);
+  }
+
+  .ai-ingredient-description-{{ ai_gen_id }} {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    color: {{ block.settings.card_text_color }};
+    font-size: 14px;
+    line-height: 1.5;
+    text-align: left;
+  }
+
+  .ai-ingredient-description-{{ ai_gen_id }}.active {
+    max-height: 200px;
+    margin-top: 15px;
+  }
+
+  .ai-ingredients-link-{{ ai_gen_id }} {
+    display: inline-block;
+    color: {{ block.settings.link_color }};
+    text-decoration: underline;
+    font-size: 16px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+  }
+
+  .ai-ingredients-link-{{ ai_gen_id }}:hover {
+    color: {{ block.settings.link_hover_color }};
+  }
+
+  @media screen and (max-width: 768px) {
+    .ai-ingredients-section-{{ ai_gen_id }} {
+      padding: 40px 15px;
+    }
+
+    .ai-ingredients-grid-{{ ai_gen_id }} {
+      grid-template-columns: repeat({{ block.settings.columns_mobile }}, 1fr);
+      gap: 20px;
+    }
+
+    .ai-ingredient-card-{{ ai_gen_id }} {
+      padding: 25px 15px;
+    }
+
+    .ai-ingredients-title-{{ ai_gen_id }} {
+      font-size: {{ block.settings.title_size | times: 0.8 }}px;
+    }
+
+    .ai-ingredients-subtitle-{{ ai_gen_id }} {
+      font-size: {{ block.settings.subtitle_size | times: 0.9 }}px;
+    }
+  }
+{% endstyle %}
+
+<science-ingredients-{{ ai_gen_id }}
+  class="ai-ingredients-section-{{ ai_gen_id }}"
+  {{ block.shopify_attributes }}
+>
+  <div class="ai-ingredients-container-{{ ai_gen_id }}">
+    <div class="ai-ingredients-header-{{ ai_gen_id }}">
+      {% if block.settings.title != blank %}
+        <h2 class="ai-ingredients-title-{{ ai_gen_id }}">{{ block.settings.title }}</h2>
+      {% endif %}
+      {% if block.settings.subtitle != blank %}
+        <p class="ai-ingredients-subtitle-{{ ai_gen_id }}">{{ block.settings.subtitle }}</p>
+      {% endif %}
+    </div>
+
+    <div class="ai-ingredients-grid-{{ ai_gen_id }}">
+      {% for i in (1..4) %}
+        {% liquid
+          assign name_key = 'ingredient_' | append: i | append: '_name'
+          assign image_key = 'ingredient_' | append: i | append: '_image'
+          assign description_key = 'ingredient_' | append: i | append: '_description'
+          assign ingredient_name = block.settings[name_key]
+          assign ingredient_image = block.settings[image_key]
+          assign ingredient_description = block.settings[description_key]
+        %}
+
+        <div class="ai-ingredient-card-{{ ai_gen_id }}" data-ingredient="{{ i }}">
+          <button 
+            class="ai-ingredient-expand-{{ ai_gen_id }}"
+            aria-label="Expand {{ ingredient_name }} details"
+            data-expand-btn="{{ i }}"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+          </button>
+
+          <div class="ai-ingredient-image-wrapper-{{ ai_gen_id }}">
+            {% if ingredient_image %}
+              <img 
+                src="{{ ingredient_image | image_url: width: 160 }}" 
+                alt="{{ ingredient_image.alt | escape }}"
+                loading="lazy"
+                width="80"
+                height="80"
+              >
+            {% else %}
+              {{ 'product-apparel-1' | placeholder_svg_tag }}
+            {% endif %}
+          </div>
+
+          <h3 class="ai-ingredient-name-{{ ai_gen_id }}">
+            {% if ingredient_name != blank %}
+              {{ ingredient_name }}
+            {% else %}
+              Ingredient {{ i }}
+            {% endif %}
+          </h3>
+
+          <div 
+            class="ai-ingredient-description-{{ ai_gen_id }}"
+            data-description="{{ i }}"
+          >
+            {% if ingredient_description != blank %}
+              {{ ingredient_description }}
+            {% else %}
+              Add a description for this ingredient to highlight its science-backed benefits.
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+
+    {% if block.settings.link_text != blank %}
+      <a 
+        href="{{ block.settings.link_url }}" 
+        class="ai-ingredients-link-{{ ai_gen_id }}"
+      >
+        {{ block.settings.link_text }}
+      </a>
+    {% endif %}
+  </div>
+</science-ingredients-{{ ai_gen_id }}>
+
+<script>
+  (function() {
+    class ScienceIngredients{{ ai_gen_id }} extends HTMLElement {
+      constructor() {
+        super();
+      }
+
+      connectedCallback() {
+        this.setupExpandButtons();
+      }
+
+      setupExpandButtons() {
+        const expandButtons = this.querySelectorAll('.ai-ingredient-expand-{{ ai_gen_id }}');
+        
+        expandButtons.forEach(button => {
+          button.addEventListener('click', (e) => {
+            e.preventDefault();
+            const ingredientId = button.dataset.expandBtn;
+            const description = this.querySelector(`[data-description="${ingredientId}"]`);
+            
+            const isActive = button.classList.contains('active');
+            
+            if (isActive) {
+              button.classList.remove('active');
+              description.classList.remove('active');
+              button.setAttribute('aria-expanded', 'false');
+            } else {
+              button.classList.add('active');
+              description.classList.add('active');
+              button.setAttribute('aria-expanded', 'true');
+            }
+          });
+        });
+      }
+    }
+
+    customElements.define('science-ingredients-{{ ai_gen_id }}', ScienceIngredients{{ ai_gen_id }});
+  })();
+</script>
+
 {% schema %}
- {
-   "name": "AI_Block",
-   "tag": "shopify-ai-generated-block"
- }
+{
+  "name": "Science ingredients",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "title",
+      "label": "Title",
+      "default": "Science-Backed Ingredients"
+    },
+    {
+      "type": "textarea",
+      "id": "subtitle",
+      "label": "Subtitle",
+      "default": "Our carefully selected ingredients are backed by scientific research to deliver proven results for better sleep and wellness."
+    },
+    {
+      "type": "text",
+      "id": "link_text",
+      "label": "Link text",
+      "default": "See Full Ingredients List"
+    },
+    {
+      "type": "url",
+      "id": "link_url",
+      "label": "Link URL"
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 1"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_1_name",
+      "label": "Name",
+      "default": "Passionfruit"
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_1_image",
+      "label": "Image"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_1_description",
+      "label": "Description",
+      "default": "Rich in antioxidants and natural compounds that promote relaxation and support healthy sleep patterns."
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 2"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_2_name",
+      "label": "Name",
+      "default": "Wild Jujube GABA"
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_2_image",
+      "label": "Image"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_2_description",
+      "label": "Description",
+      "default": "A natural source of GABA that helps calm the nervous system and reduce stress for better sleep quality."
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 3"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_3_name",
+      "label": "Name",
+      "default": "Tart Cherry"
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_3_image",
+      "label": "Image"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_3_description",
+      "label": "Description",
+      "default": "Naturally high in melatonin and anthocyanins, supporting the body's natural sleep-wake cycle."
+    },
+    {
+      "type": "header",
+      "content": "Ingredient 4"
+    },
+    {
+      "type": "text",
+      "id": "ingredient_4_name",
+      "label": "Name",
+      "default": "Phytomelatonin"
+    },
+    {
+      "type": "image_picker",
+      "id": "ingredient_4_image",
+      "label": "Image"
+    },
+    {
+      "type": "textarea",
+      "id": "ingredient_4_description",
+      "label": "Description",
+      "default": "Plant-derived melatonin that works with your body's natural rhythms to promote restful sleep."
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns_mobile",
+      "label": "Columns on mobile",
+      "options": [
+        {"value": "1", "label": "1"},
+        {"value": "2", "label": "2"}
+      ],
+      "default": "2"
+    },
+    {
+      "type": "header",
+      "content": "Colors"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "title_color",
+      "label": "Title",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "subtitle_color",
+      "label": "Subtitle",
+      "default": "#666666"
+    },
+    {
+      "type": "color",
+      "id": "card_background",
+      "label": "Card background",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "card_border_color",
+      "label": "Card border",
+      "default": "#e5e5e5"
+    },
+    {
+      "type": "color",
+      "id": "card_text_color",
+      "label": "Card text",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "plus_background",
+      "label": "Plus button background",
+      "default": "#f0f0f0"
+    },
+    {
+      "type": "color",
+      "id": "plus_hover_background",
+      "label": "Plus button hover",
+      "default": "#e0e0e0"
+    },
+    {
+      "type": "color",
+      "id": "plus_color",
+      "label": "Plus icon",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "link_color",
+      "label": "Link",
+      "default": "#0066cc"
+    },
+    {
+      "type": "color",
+      "id": "link_hover_color",
+      "label": "Link hover",
+      "default": "#004499"
+    },
+    {
+      "type": "header",
+      "content": "Typography"
+    },
+    {
+      "type": "range",
+      "id": "title_size",
+      "min": 20,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "label": "Title size",
+      "default": 36
+    },
+    {
+      "type": "range",
+      "id": "subtitle_size",
+      "min": 12,
+      "max": 24,
+      "step": 1,
+      "unit": "px",
+      "label": "Subtitle size",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "card_radius",
+      "min": 0,
+      "max": 30,
+      "step": 2,
+      "unit": "px",
+      "label": "Card border radius",
+      "default": 12
+    }
+  ],
+  "presets": [
+    {
+      "name": "Science ingredients"
+    }
+  ]
+}
 {% endschema %}
